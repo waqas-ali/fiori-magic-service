@@ -1,0 +1,62 @@
+.image_carousel {
+	padding: 1px 35px 50px 50px;
+	position: relative;
+}
+.image_carousel img {
+	background-color: white;
+	padding: 9px;
+	margin: 7px;
+	display: block;
+	float: left;
+	/* border: 1px solid #a6c9e2; */
+}
+a.prev, a.next {
+	background: url(/assets/images/cric_hp_sprite.png) no-repeat transparent;
+	width: 27px;
+height: 45px;
+background-position: -201px -89px;
+float: left;
+position: absolute;
+top: 150px;
+z-index: 1;
+right: 0;
+}
+a.prev {			left: 50px;
+					background-position: -134px -89px; }
+a.prev:hover {		 }
+a.prev.disabled {	background-position: 0 -89px !important;  }
+a.next {			right: 35px;
+					 }
+a.next:hover {		 }
+a.next.disabled {	background-position: -67px -89px !important }
+a.prev.disabled, a.next.disabled {
+	cursor: default;
+}
+
+a.prev span, a.next span {
+	display: none;
+}
+.pagination {
+	text-align: center;
+}
+.pagination a {
+	background: url(http://caroufredsel.dev7studios.com/images/miscellaneous_sprite.png) 0 -300px no-repeat transparent;
+	width: 15px;
+	height: 15px;
+	margin: 0 5px 0 0;
+}
+.pagination a.selected {
+	background-position: -25px -300px;
+	cursor: default;
+	
+}
+.pagination a span {
+	display: none;
+}
+.clearfix {
+	float: none;
+	clear: both;
+}
+#foo2{
+	position: none;
+}

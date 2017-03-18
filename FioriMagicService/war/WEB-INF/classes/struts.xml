@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="global" />
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+	<!-- When on production set dynamicMethodInvocation to false -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<!-- When on production set devMode to false -->
+
+	<constant name="struts.configuration.xml.reload" value="false" />
+	<constant name="struts.i18n.reload" value="false" />
+
+	<constant name="struts.action.excludePattern"
+		value="/images/.*,/_ah/.*,/odata.svc/*.*,/assets/.*,/prototype/.*,/notifications,/error/.*,/unLockSubmissions" />
+	<constant name="struts.enable.SlashesInActionNames" value="false" />
+	<constant name="struts.freemarker.mru.max.strong.size" value="250" />
+	<!-- When on production make the updateDelay as 15 mins -->
+	<constant name="struts.freemarker.templatesCache.updateDelay"
+		value="0" />
+	<constant name="struts.multipart.maxSize" value="10485760" />
+	<constant name="struts.action.extension" value="" />
+
+	<package name="default" namespace="/" extends="struts-default">
+
+		<result-types>
+			<result-type name="dispatcher" default="true"
+				class="org.apache.struts2.dispatcher.ServletDispatcherResult" />
+		</result-types>
+		<interceptors>
+			<interceptor name="authorization"
+				class="com.convergent.struts2.interceptors.AuthorizationInterceptor" />
+			<interceptor-stack name="authorizationStack">
+				<interceptor-ref name="authorization" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+
+		<!-- Default action name <default-action-ref name="Index" /> -->
+
+		<action name="Index" method="index"
+			class="com.convergent.struts2.actions.UserAction">
+			<result name="success" type="dispatcher">WEB-INF/html/index.jsp</result>
+		</action>
+
+		<!-- User Authentication Actions Started  -->
+
+		<action name="Login" method="login"
+			class="com.convergent.struts2.actions.UserAuthenticationAction">
+			<result name="success" type="redirect">Home
+			</result>
+			<result name="notfound" type="dispatcher">/WEB-INF/ftl/page/login.jsp
+			</result>
+			<result name="redirect" type="redirectAction">AuthPage
+			</result>
+		</action>
+		
+		<action name="UserAuthenticate" method="userAuth" class="com.convergent.struts2.actions.UserAuthenticationAction" >
+			<result name="success" type="redirect">Home
+			</result>
+			<result name="failed" type="dispatcher">/WEB-INF/ftl/page/login.jsp</result>
+		</action>
+		
+		<action name="Initiate" method="initiateProcess"
+			class="com.convergent.struts2.actions.UserAuthenticationAction">
+			<result name="success" type="redirectAction">
+				<param name="actionName">AuthPage</param>
+				<param name="url">${url}</param>
+			</result>
+		</action>
+		
+		<action name="AuthPage" method="openIdAuthentication"
+			class="com.convergent.struts2.actions.UserAuthenticationAction">
+		</action>
+		
+		<action name="Logging" method="logging"
+			class="com.convergent.struts2.actions.UserAuthenticationAction">
+			<result name="success" type="redirect">Login</result>
+		</action>
+		
+		<action name="Home" method="homePage"
+			class="com.convergent.struts2.actions.UserAuthenticationAction">
+			<result name="success" type="dispatcher">/WEB-INF/ftl/page/testclient.jsp
+			</result>
+			<result name="redirect" type="redirect">Index
+			</result>
+		</action>
+		
+		<!-- <action name="Home" class="com.convergent.struts2.actions.UserAction" 
+			method="login"> <interceptor-ref name="authorizationStack" /> <result name="testclient" 
+			type="freemarker">/WEB-INF/ftl/page/testclient.ftl </result> <result name="success" 
+			type="freemarker">/WEB-INF/ftl/page/main.ftl </result> </action>
+			--> 
+			<action 
+			name="Logout" class="com.convergent.struts2.actions.UserAction" method="logout"> 
+			<result name="success" type="redirect">Index</result> 
+			</action> 
+		
+		<!-- Domain Management Actions Started  -->
+		
+		<action name="ShowDomains"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="showDomains">
+			<result type="dispatcher">/WEB-INF/jsp/domain_management.jsp</result>
+		</action>
+		<action name="AddDomain"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="saveDomain">
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="redirect">ShowDomains</result>
+		</action>
+		<action name="EditDomain"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="updateDomain">
+			<result name="success" type="redirect">ShowDomains
+			</result>
+		</action>
+		<action name="AddDomainPage"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="addDomainForm">
+			<result name="success" type="dispatcher">/WEB-INF/jsp/add_domain.jsp
+			</result>
+		</action>
+		<action name="DeleteDomain"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="deleteDomain">
+			<result name="success" type="redirect">ShowDomains</result>
+		</action>
+		<action name="LoadDomain"
+			class="com.convergent.struts2.actions.DomainManagementAction" method="loadDomain">
+			<result>/WEB-INF/jsp/add_domain.jsp</result>
+		</action>
+
+		<!-- Alias Management Actions Started  -->
+		
+		<action name="ShowAlias"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="showAlias">
+			<result type="dispatcher">/WEB-INF/jsp/alias_management.jsp</result>
+		</action>
+		<action name="SaveAlias"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="saveAlias">
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="redirect">ShowAlias</result>
+		</action>
+		<action name="UpdateAlias"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="updateAlias">
+			<result name="success" type="redirect">ShowAlias
+			</result>
+		</action>
+		<action name="AddAliasForm"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="addAliasForm">
+			<result name="success" type="dispatcher">/WEB-INF/jsp/add_alias.jsp
+			</result>
+		</action>
+		<action name="DeleteAlias"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="deleteAlias">
+			<result name="success" type="redirect">ShowAlias</result>
+		</action>
+		<action name="LoadAlias"
+			class="com.convergent.struts2.actions.AliasManagementAction" method="loadAlias">
+			<result>/WEB-INF/jsp/add_alias.jsp</result>
+		</action>
+
+		<action name="InputDocument"
+			class="com.convergent.struts2.actions.DocumentCategorizationAction"
+			method="categorizationPage">
+			<result name="success" type="dispatcher">/WEB-INF/html/categorization_input.jsp
+			</result>
+		</action>
+		<action name="CategoryDocument"
+			class="com.convergent.struts2.actions.DocumentCategorizationAction"
+			method="categorizationResult">
+			<result name="success" type="dispatcher">/WEB-INF/jsp/categorization_result.jsp
+			</result>
+		</action>
+	</package>
+</struts>

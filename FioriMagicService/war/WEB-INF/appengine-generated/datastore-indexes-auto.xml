@@ -1,0 +1,11 @@
+<!-- Indices written at Fri, 10 Jan 2014 00:07:28 PKT -->
+
+<datastore-indexes>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="OAuthLoginHistory" ancestor="false" source="auto">
+        <property name="domainName" direction="asc"/>
+        <property name="loginDate" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

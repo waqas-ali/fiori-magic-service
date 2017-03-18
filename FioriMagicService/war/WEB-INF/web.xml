@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- <filter> <filter-name>struts</filter-name> <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class> 
+		</filter> <filter-mapping> <filter-name>struts</filter-name> <url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher> <dispatcher>FORWARD</dispatcher> </filter-mapping> -->
+	<filter>
+		<filter-name>struts-prepare</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>struts-execute</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts-prepare</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>struts-execute</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.convergent.auth.AuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/odata.svc/*</url-pattern>
+	</filter-mapping>
+	
+	<listener>
+		<listener-class>com.convergent.struts2.actions.Struts2ListenerOnGAE</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>UnLockSubmissions</servlet-name>
+		<servlet-class>com.convergent.processor.UnLockSubmissions</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Notifications</servlet-name>
+		<servlet-class>com.convergent.processor.Notifications</servlet-class>
+	</servlet>
+	<!-- Servlet 1: Expose the appengine datastore as an OData service endpoint 
+		Servlet 1: Expose the OData service endpoint -->
+	<servlet>
+		<servlet-name>OData</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>org.odata4j.jersey.producer.resources.ODataApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>odata4j.producerfactory</param-name>
+			<param-value>com.convergent.odata.DatastoreProducerFactory</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>OData</servlet-name>
+		<url-pattern>/odata.svc/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet 2: Enable crossdomain access for browser clients Servlet 2: 
+		Enable crossdomain access for browser clients 
+		-->
+	<!--  
+		<servlet>
+			<servlet-name>CrossDomain</servlet-name>
+			<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+			<init-param>
+				<param-name>javax.ws.rs.Application</param-name>
+				<param-value>org.odata4j.producer.resources.RootApplication</param-value>
+			</init-param>
+			<load-on-startup>1</load-on-startup>
+		</servlet>
+	-->
+	
+	<servlet-mapping>
+		<servlet-name>UnLockSubmissions</servlet-name>
+		<url-pattern>/unLockSubmissions</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Notifications</servlet-name>
+		<url-pattern>/notifications</url-pattern>
+	</servlet-mapping>
+
+	<!-- 
+	<servlet-mapping>
+		<servlet-name>CrossDomain</servlet-name>
+		<url-pattern>/abc/*</url-pattern>
+	</servlet-mapping> 
+	-->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error/error403.ftl</location>
+	</error-page>
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error/error400.ftl</location>
+	</error-page>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+</web-app>
